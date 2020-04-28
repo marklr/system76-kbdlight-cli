@@ -8,6 +8,6 @@ Usage
 =====
 Preferably in a virtualenv:
 - `pip install -r requirements.txt`
-- `python3 kblight.py ff0033` 
+- `sudo python3 kblight.py green` 
 
 
