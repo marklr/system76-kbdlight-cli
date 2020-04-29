@@ -30,9 +30,10 @@ def parse_color(color):
 
     hex = None
     try:
-        rgb = webcolors.hex_to_rgb(c)
+        hc = '#' + c if not c.startswith('#') else c
+        rgb = webcolors.hex_to_rgb(hc)
         if rgb:
-            return c
+            return hc.upper()
     except Exception:
         # probably not a hex already
         pass
@@ -53,7 +54,8 @@ def parse_color(color):
         except Exception:
             pass
 
-    return hex[1:] if hex else None
+    return hex
+
 
 def set_light(name, hex):
     if name not in LIGHT_CONTROLS:
@@ -62,8 +64,7 @@ def set_light(name, hex):
     print(f"[+] Setting light {name} to {hex}", file=sys.stdout)
 
     with open(LIGHT_CONTROLS[name], 'w') as f:
-        f.write(hex.upper() + "\n")
-        f.flush()
+        f.write(hex.upper().replace('#', '') + "\n")
 
 def main(color: ("color choice (rgb triplet/color name/hex)", 'positional'),
          light: ("light to set (right/left/center/all)", 'option', 'l')='all'):
@@ -75,8 +76,8 @@ def main(color: ("color choice (rgb triplet/color name/hex)", 'positional'),
         return os.EX_NOINPUT
 
     print(f"[*] Parsed color {color} to hex {hex}", file=sys.stdout)
-    for light in filter(lambda x: light == x or light == 'all', LIGHT_CONTROLS.keys()):
-        set_light(light, hex)
+    for light_ in filter(lambda x: light == x or light == 'all', LIGHT_CONTROLS.keys()):
+        set_light(light_, hex)
 
 if __name__ == '__main__':
     plac.call(main)
